@@ -41,7 +41,7 @@ function App() {
         {esAdmin && (
           <Route path="/" element={<AdminLayout />}>
              <Route index element={<AdminDashboard />} />
-             <Route path="usuarios" element={<UsuariosAdmin />} />
+             <Route path="/admin/usuarios" element={<UsuariosAdmin />} />
           </Route>
         )}
 
