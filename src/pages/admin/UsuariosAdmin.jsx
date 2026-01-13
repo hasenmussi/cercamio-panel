@@ -104,23 +104,37 @@ export default function UsuariosAdmin() {
                     </div>
                   </td>
 
-                  {/* ROL */}
+                  {/* ROL / TIPO ACUMULATIVO */}
                   <td className="px-6 py-4">
-                    <div className="flex gap-2">
+                    <div className="flex flex-col gap-2 items-start">
+                      
+                      {/* 1. ADMIN (Jerarquía Máxima) */}
                       {user.rol === 'SUPER_ADMIN' && (
-                        <span className="inline-flex items-center px-2 py-1 rounded text-xs font-bold bg-purple-500/10 text-purple-400 border border-purple-500/20">
-                          <Shield className="w-3 h-3 mr-1" /> GOD
+                        <span className="inline-flex items-center px-2 py-1 rounded text-xs font-bold bg-purple-500/10 text-purple-400 border border-purple-500/20 w-full justify-center">
+                          <Shield className="w-3 h-3 mr-1" /> ADMIN
                         </span>
                       )}
-                      {user.tipo === 'PROFESIONAL' ? (
-                        <span className="inline-flex items-center px-2 py-1 rounded text-xs font-bold bg-blue-500/10 text-blue-400 border border-blue-500/20">
-                          <Store className="w-3 h-3 mr-1" /> Vendedor
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center px-2 py-1 rounded text-xs font-bold bg-slate-800 text-slate-400 border border-slate-700">
-                          <User className="w-3 h-3 mr-1" /> Vecino
+
+                      {/* 2. VECINO (Base: Todos son vecinos si no son admin, o incluso siendolo) */}
+                      {user.rol !== 'SUPER_ADMIN' && (
+                        <span className="inline-flex items-center px-2 py-1 rounded text-xs font-bold bg-slate-800 text-slate-400 border border-slate-700 w-full justify-center">
+                          <User className="w-3 h-3 mr-1" /> VECINO
                         </span>
                       )}
+
+                      {/* 3. DUEÑO (Adicional: Si tiene local) */}
+                      {user.nombre_local && (
+                        <div className="flex flex-col w-full">
+                          <span className="inline-flex items-center px-2 py-1 rounded text-xs font-bold bg-blue-500/10 text-blue-400 border border-blue-500/20 w-full justify-center">
+                            <Store className="w-3 h-3 mr-1" /> DUEÑO
+                          </span>
+                          {/* Nombre del local indentado */}
+                          <span className="text-[10px] text-slate-500 ml-1 mt-1 font-mono truncate max-w-[140px] flex items-center">
+                            ↳ {user.nombre_local}
+                          </span>
+                        </div>
+                      )}
+                      
                     </div>
                   </td>
 
