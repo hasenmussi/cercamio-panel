@@ -14,6 +14,7 @@ import Cupones from './pages/Cupones'; // Asegúrate de tener este archivo si lo
 
 // PAGINAS ADMIN
 import AdminDashboard from './pages/admin/AdminDashboard'; // 👈 FALTABA ESTO
+import UsuariosAdmin from './pages/admin/UsuariosAdmin';
 
 // 🛡️ PROTECTOR DE RUTA (VENDEDOR)
 function ProtectedRoute({ children }) {
@@ -40,7 +41,7 @@ function App() {
         {esAdmin && (
           <Route path="/" element={<AdminLayout />}>
              <Route index element={<AdminDashboard />} />
-             {/* Aquí irán /usuarios, /finanzas, etc. */}
+             <Route path="usuarios" element={<UsuariosAdmin />} />
           </Route>
         )}
 
