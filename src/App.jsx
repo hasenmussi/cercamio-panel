@@ -17,6 +17,7 @@ import AdminDashboard from './pages/admin/AdminDashboard'; // 👈 FALTABA ESTO
 import UsuariosAdmin from './pages/admin/UsuariosAdmin';
 import FinanzasAdmin from './pages/admin/FinanzasAdmin';
 import MapaAdmin from './pages/admin/MapaAdmin';
+import SeguridadAdmin from './pages/admin/SeguridadAdmin';
 
 // 🛡️ PROTECTOR DE RUTA (VENDEDOR)
 function ProtectedRoute({ children }) {
@@ -46,6 +47,7 @@ function App() {
              <Route path="/admin/usuarios" element={<UsuariosAdmin />} />
              <Route path="/admin/finanzas" element={<FinanzasAdmin />} />
              <Route path="/admin/mapa" element={<MapaAdmin />} />
+             <Route path="/admin/seguridad" element={<SeguridadAdmin />} />
           </Route>
         )}
 
