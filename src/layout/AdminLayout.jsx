@@ -29,7 +29,8 @@ export default function AdminLayout() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100 flex">
+    // Esto pone todo el fondo en modo "Torre de Control Nocturna"
+    <div className="min-h-screen bg-slate-950 flex text-slate-200">
       
       {/* 🌑 SIDEBAR OSCURO (EXCLUSIVO ADMIN) */}
       <aside className="w-72 bg-slate-900 text-white flex flex-col fixed h-full z-20 shadow-2xl">
