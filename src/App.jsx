@@ -24,19 +24,28 @@ function ProtectedRoute({ children }) {
 
 // 🧭 ENRUTADOR PRINCIPAL
 function App() {
+  const user = useAuthStore((state) => state.user);
+  const esAdmin = user?.rol === 'SUPER_ADMIN' || user?.rol === 'SOPORTE';
+
   return (
     <BrowserRouter>
       <Routes>
-        
-        {/* 1. RUTA PÚBLICA (La puerta de entrada) */}
         <Route path="/login" element={<Login />} />
 
-        {/* 2. RUTAS PRIVADAS (El Panel de Control) */}
-        <Route path="/" element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        } />
+        {/* 🌍 MUNDO ADMIN */}
+        {esAdmin && (
+          <Route path="/" element={<AdminLayout />}>
+             <Route index element={<AdminDashboard />} />
+             <Route path="finanzas" element={<FinanzasAdmin />} />
+             <Route path="usuarios" element={<UsuariosAdmin />} />
+             {/* ... más rutas admin */}
+          </Route>
+        )}
+
+        {/* 🏪 MUNDO VENDEDOR (Default) */}
+        {!esAdmin && (
+          <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        )}
 
         {/* Inventario */}
         <Route path="/inventario" element={
