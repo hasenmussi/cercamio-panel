@@ -1,75 +1,60 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthStore } from './store/authStore';
+
+// LAYOUTS
 import MainLayout from './layout/MainLayout';
+import AdminLayout from './layout/AdminLayout'; // 👈 FALTABA ESTO
+
+// PAGINAS PÚBLICAS/VENDEDOR
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Inventario from './pages/Inventario';
-import Pedidos from './pages/Pedidos';
-import Cupones from './pages/Cupones';
+import Pedidos from './pages/Pedidos'; // Asegúrate de tener este archivo si lo usas
+import Cupones from './pages/Cupones'; // Asegúrate de tener este archivo si lo usas
 
-// 🛡️ COMPONENTE PROTECTOR (GUARDIA DE SEGURIDAD)
-// Verifica si tienes token. 
-// - Si NO tienes: Te manda al Login.
-// - Si SÍ tienes: Te deja pasar y te envuelve en el MainLayout (Sidebar + Contenido).
+// PAGINAS ADMIN
+import AdminDashboard from './pages/admin/AdminDashboard'; // 👈 FALTABA ESTO
+
+// 🛡️ PROTECTOR DE RUTA (VENDEDOR)
 function ProtectedRoute({ children }) {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  
-  if (!isAuthenticated) {
-    // "replace" evita que el usuario pueda volver atrás con el botón del navegador
-    return <Navigate to="/login" replace />;
-  }
-  
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
   return <MainLayout>{children}</MainLayout>;
 }
 
 // 🧭 ENRUTADOR PRINCIPAL
 function App() {
   const user = useAuthStore((state) => state.user);
+  
+  // Detectamos si es Admin (Rol viene del backend en el login)
   const esAdmin = user?.rol === 'SUPER_ADMIN' || user?.rol === 'SOPORTE';
 
   return (
     <BrowserRouter>
       <Routes>
+        
+        {/* 1. LOGIN */}
         <Route path="/login" element={<Login />} />
 
-        {/* 🌍 MUNDO ADMIN */}
+        {/* 2. MUNDO ADMIN (Solo si esAdmin es true) */}
         {esAdmin && (
           <Route path="/" element={<AdminLayout />}>
              <Route index element={<AdminDashboard />} />
-             <Route path="finanzas" element={<FinanzasAdmin />} />
-             <Route path="usuarios" element={<UsuariosAdmin />} />
-             {/* ... más rutas admin */}
+             {/* Aquí irán /usuarios, /finanzas, etc. */}
           </Route>
         )}
 
-        {/* 🏪 MUNDO VENDEDOR (Default) */}
+        {/* 3. MUNDO VENDEDOR (Si NO es admin) */}
         {!esAdmin && (
-          <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <>
+            <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/inventario" element={<ProtectedRoute><Inventario /></ProtectedRoute>} />
+            <Route path="/pedidos" element={<ProtectedRoute><Pedidos /></ProtectedRoute>} />
+            <Route path="/cupones" element={<ProtectedRoute><Cupones /></ProtectedRoute>} />
+          </>
         )}
-
-        {/* Inventario */}
-        <Route path="/inventario" element={
-          <ProtectedRoute>
-            <Inventario />
-          </ProtectedRoute>
-        } />
-
-        {/* Pedidos */}
-        <Route path="/pedidos" element={
-          <ProtectedRoute>
-            <Pedidos />
-          </ProtectedRoute>
-        } />
-
-        {/* Pedidos */}
-        <Route path="/cupones" element={
-          <ProtectedRoute>
-            <Cupones />
-          </ProtectedRoute>
-        } />
         
-        {/* 3. CATCH-ALL (Redirección por defecto) */}
-        {/* Si escriben una url rara (/lo-que-sea), los mandamos al inicio */}
+        {/* 4. CATCH-ALL */}
         <Route path="*" element={<Navigate to="/" replace />} />
 
       </Routes>
