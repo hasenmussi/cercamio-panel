@@ -28,11 +28,19 @@ export default function Login() {
     setError('');
 
     try {
-      // 1. LOGIN NORMAL
+      // 1. LOGIN NORMAL (Obtener Token y Datos)
       const resLogin = await api.post('/auth/login', { email, password });
       const { token, usuario } = resLogin.data;
 
-      // 2. VERIFICACIÓN DE NEGOCIO
+      // 🚨 BYPASS VIP PARA SUPER ADMIN 🚨
+      // Si es Admin, no le pedimos que tenga un Kiosco. Entra directo.
+      if (usuario.rol === 'SUPER_ADMIN' || usuario.rol === 'SOPORTE') {
+         login(token, usuario, null); // Pasamos null en 'local' porque no tiene
+         navigate('/', { replace: true });
+         return; // 🛑 Detenemos la función aquí, éxito total.
+      }
+
+      // 2. VERIFICACIÓN DE NEGOCIO (Solo para usuarios normales)
       try {
         const resLocal = await api.get('/mi-negocio/config', {
           headers: { Authorization: `Bearer ${token}` }
@@ -40,11 +48,8 @@ export default function Login() {
 
         const localData = resLocal.data;
 
-        // 3. GUARDAR EN STORE
+        // 3. GUARDAR EN STORE (Vendedor)
         login(token, usuario, localData);
-
-        // 4. 🔥 NAVEGACIÓN EXPLÍCITA (LA SOLUCIÓN)
-        // Forzamos el cambio de ruta al Dashboard inmediatamente
         navigate('/', { replace: true });
 
       } catch (errLocal) {
